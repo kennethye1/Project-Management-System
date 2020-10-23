@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { useContext } from "react";
+import { useParams } from "react-router-dom";
 import { TaskContext } from "../context/TaskContext";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import ProjectAPI from "../api/ProjectAPI";
 import "./AddTask.css";
 
 const AddTask = () => {
   const [show, setShow] = useState(false);
-
+  const { id } = useParams();
   //const { addTask } = useContext(TaskContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -16,6 +17,24 @@ const AddTask = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (status !== "Task Type") {
+        const response = await ProjectAPI.post(`/${id}/addTask`, {
+          title,
+          description,
+          status,
+        });
+        console.log(response);
+      }
+    } catch (error) {
+      console.error(error, error.stack);
+    }
+    window.location.reload();
+  };
 
   return (
     <div>
@@ -66,8 +85,8 @@ const AddTask = () => {
                 <option hidden disabled>
                   Task Type
                 </option>
-                <option value="Bug"> &#xf188; &nbsp; Bug </option>
-                <option value="Todo"> &#xf0ae; &nbsp; Todo </option>
+                <option value="Bugs"> &#xf188; &nbsp; Bug </option>
+                <option value="TODOs"> &#xf0ae; &nbsp; Todo </option>
               </Form.Control>
 
               {/* <link
@@ -95,8 +114,8 @@ const AddTask = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" type="submit" onClick={handleSubmit}>
+            Submit
           </Button>
         </Modal.Footer>
       </Modal>
