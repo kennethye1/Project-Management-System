@@ -12,7 +12,7 @@ function UpdateTask({ open, close, task }) {
   const [description, setDescription] = useState(task.description);
   const [status, setStatus] = useState(task.status);
   const { id } = useParams();
-  console.log(task.id);
+
   const handleUpdate = async (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
@@ -52,7 +52,7 @@ function UpdateTask({ open, close, task }) {
       <Modal
         show={open}
         onHide={() => {
-          close();
+          close(task.id);
           setDescription(task.description);
           setTitle(task.title);
           setStatus(task.status);
@@ -112,7 +112,7 @@ function UpdateTask({ open, close, task }) {
           <Button
             variant="secondary"
             onClick={() => {
-              close();
+              close(task.id);
               setDescription(task.description);
               setTitle(task.title);
               setStatus(task.status);
@@ -124,7 +124,7 @@ function UpdateTask({ open, close, task }) {
             variant="primary"
             onClick={(e) => {
               handleUpdate(e);
-              close();
+              close(task.id);
               setDescription(task.description);
               setTitle(task.title);
               setStatus(task.status);

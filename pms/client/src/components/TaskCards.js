@@ -14,20 +14,14 @@ const TaskCards = ({ task }) => {
     );
   }
   let initialState = {};
-  for (let i = 0; i < taskStatus.length; i++) {
-    curr_id = taskStatus[i].id;
-    initialState.curr_id = false;
+  if (taskStatus) {
+    for (let i = 0; i < taskStatus.length; i++) {
+      initialState[taskStatus[i].id] = false;
+    }
   }
-
   const [open, setOpen] = useState(initialState);
-  const handleOpen = (id) => {
-    const st = 
-    setOpen((open) =>);
-  };
-  const handleClose = (id) => {
-    setOpen((open) => {
-      let;
-    });
+  const close = (task_id) => {
+    setOpen({ ...open, [task_id]: false });
   };
   return (
     <>
@@ -40,16 +34,15 @@ const TaskCards = ({ task }) => {
                 <ListGroup.Item
                   key={todos.id}
                   onClick={() => {
-                    setOpen(true);
+                    setOpen({ ...open, [todos.id]: true });
                   }}
                 >
-                  {" "}
                   <UpdateTask
-                    open={open.todos.id}
-                    close={handleClose}
+                    open={open[todos.id]}
+                    close={close}
                     task={todos}
                   />
-                  {todos.title}{" "}
+                  {todos.title}
                 </ListGroup.Item>
               );
             })}
