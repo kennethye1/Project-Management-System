@@ -78,11 +78,12 @@ const AddTask = () => {
               />
               <Form.Control
                 as="select"
+                required
                 custom
                 onChange={(e) => setStatus(e.target.value)}
                 value={status}
               >
-                <option hidden disabled>
+                <option hidden disabled value={null}>
                   Task Type
                 </option>
                 <option value="Bugs"> &#xf188; &nbsp; Bug </option>

@@ -17,7 +17,7 @@ app.get("/api/projects", async (req, res) => {
       },
     });
   } catch (error) {
-    alert(error.message);
+    console.log(error);
   }
 });
 
@@ -39,7 +39,7 @@ app.get("/api/projects/:id", async (req, res) => {
       },
     });
   } catch (error) {
-    alert(error.message);
+    console.log(error);
   }
 });
 
@@ -56,7 +56,7 @@ app.post("/api/projects", async (req, res) => {
       },
     });
   } catch (error) {
-    alert(error.message);
+    console.log(error);
   }
 });
 
@@ -74,7 +74,7 @@ app.put("/api/projects/:id", async (req, res) => {
       },
     });
   } catch (error) {
-    alert(error.message);
+    console.log(error);
   }
 });
 
@@ -86,7 +86,7 @@ app.delete("/api/projects/:id", async (req, res) => {
     ]);
     res.status(204).json();
   } catch (error) {
-    alert(error.message);
+    console.log(error);
   }
 });
 // add a Task
@@ -101,7 +101,36 @@ app.post("/api/projects/:id/addTask", async (req, res) => {
       data: { task: newTask.rows[0] },
     });
   } catch (error) {
-    alert(error.mesage);
+    console.log(error);
+  }
+});
+//update task
+app.put("/api/projects/:project_id/:id", async (req, res) => {
+  try {
+    const task = await db.query(
+      "UPDATE tasks SET title = $1, description = $2, status = $3 where id=$4 returning *",
+      [req.body.title, req.body.description, req.body.status, req.params.id]
+    );
+    console.log(task);
+
+    res.status(200).json({
+      data: {
+        task: task.rows[0],
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/api/projects/:project_id/delete/:id", async (req, res) => {
+  try {
+    const results = await db.query("DELETE FROM tasks where id = $1", [
+      req.params.id,
+    ]);
+    res.status(204).json();
+  } catch (error) {
+    console.log(error);
   }
 });
 
