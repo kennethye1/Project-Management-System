@@ -12,6 +12,7 @@ function UpdateTask({ open, close, task }) {
   const [description, setDescription] = useState(task.description);
   const [status, setStatus] = useState(task.status);
   const { id } = useParams();
+  const [checked, setChecked] = useState(false);
 
   const handleUpdate = async (e) => {
     e.stopPropagation();
@@ -19,6 +20,7 @@ function UpdateTask({ open, close, task }) {
     e.preventDefault();
 
     try {
+      console.log(status, "put");
       const response = await ProjectAPI.put(`/${id}/${task.id}`, {
         title,
         description,
@@ -32,16 +34,23 @@ function UpdateTask({ open, close, task }) {
     window.location.reload();
   };
 
-  // const handleDelete = async (e) => {
-  //   e.stopPropagation();
+  const handleDelete = async (e) => {
+    e.stopPropagation();
 
-  //   try {
-  //     const response = await ProjectAPI.delete(`/${id}/delete/${task.id}`);
-  //   } catch (error) {
-  //     console.error(error, error.stack);
-  //   }
-  // };
-
+    try {
+      const response = await ProjectAPI.delete(`/${id}/${task.id}`);
+    } catch (error) {
+      console.error(error, error.stack);
+    }
+  };
+  const handleChange = () => {
+    if (!checked) {
+      setStatus("Completed");
+    } else {
+      setStatus(task.status);
+    }
+    setChecked(!checked);
+  };
   return (
     <div
       onKeyDown={(e) => e.stopPropagation()}
@@ -104,7 +113,12 @@ function UpdateTask({ open, close, task }) {
             </Form.Group>
 
             <Form.Group id="formGridCheckbox">
-              <Form.Check type="checkbox" label="Mark as Complete" />
+              <Form.Check
+                type="checkbox"
+                label="Mark as Complete"
+                checked={checked}
+                onChange={handleChange}
+              />
             </Form.Group>
           </Modal.Body>
         </Form>
@@ -121,13 +135,22 @@ function UpdateTask({ open, close, task }) {
             Close
           </Button>
           <Button
+            variant="danger"
+            onClick={(e) => {
+              handleDelete(e);
+              close(task.id);
+            }}
+          >
+            Delete Task
+          </Button>
+          <Button
             variant="primary"
             onClick={(e) => {
               handleUpdate(e);
               close(task.id);
-              setDescription(task.description);
-              setTitle(task.title);
-              setStatus(task.status);
+              setDescription(description);
+              setTitle(title);
+              setStatus(status);
             }}
           >
             Save Changes

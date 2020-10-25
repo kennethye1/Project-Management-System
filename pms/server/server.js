@@ -123,7 +123,7 @@ app.put("/api/projects/:project_id/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/projects/:project_id/delete/:id", async (req, res) => {
+app.delete("/api/projects/:project_id/:id", async (req, res) => {
   try {
     const results = await db.query("DELETE FROM tasks where id = $1", [
       req.params.id,
