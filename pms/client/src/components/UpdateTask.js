@@ -20,14 +20,11 @@ function UpdateTask({ open, close, task }) {
     e.preventDefault();
 
     try {
-      console.log(status, "put");
       const response = await ProjectAPI.put(`/${id}/${task.id}`, {
         title,
         description,
         status,
       });
-
-      console.log(response);
     } catch (error) {
       console.error(error, error.stack);
     }
@@ -39,6 +36,10 @@ function UpdateTask({ open, close, task }) {
 
     try {
       const response = await ProjectAPI.delete(`/${id}/${task.id}`);
+      const updatedTaskList = selectedProj.tasks.filter(
+        (todo) => task.id != todo.id
+      );
+      setSelectedProj({ ...selectedProj, tasks: updatedTaskList });
     } catch (error) {
       console.error(error, error.stack);
     }
