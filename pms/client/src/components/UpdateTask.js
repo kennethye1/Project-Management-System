@@ -20,11 +20,15 @@ function UpdateTask({ open, close, task }) {
     e.preventDefault();
 
     try {
-      const response = await ProjectAPI.put(`/${id}/${task.id}`, {
-        title,
-        description,
-        status,
-      });
+      const response = await ProjectAPI.put(
+        `/${id}/${task.id}`,
+        {
+          title,
+          description,
+          status,
+        },
+        { headers: { token: localStorage.token } }
+      );
       console.log(status);
     } catch (error) {
       console.error(error, error.stack);
@@ -36,7 +40,9 @@ function UpdateTask({ open, close, task }) {
     e.stopPropagation();
 
     try {
-      const response = await ProjectAPI.delete(`/${id}/${task.id}`);
+      const response = await ProjectAPI.delete(`/${id}/${task.id}`, {
+        headers: { token: localStorage.token },
+      });
       const updatedTaskList = selectedProj.tasks.filter(
         (todo) => task.id != todo.id
       );

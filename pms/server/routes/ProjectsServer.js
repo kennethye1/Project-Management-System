@@ -106,7 +106,7 @@ router.delete("/:id", auth, async (req, res) => {
 });
 
 // add a Task
-router.post("/:id/addTask", async (req, res) => {
+router.post("/:id/addTask", auth, async (req, res) => {
   try {
     const newTask = await db.query(
       "INSERT INTO tasks (proj_id, title, description, status) values ($1, $2, $3, $4) returning *;",
@@ -122,10 +122,10 @@ router.post("/:id/addTask", async (req, res) => {
   }
 });
 //update task
-router.put("/:project_id/:id", async (req, res) => {
+router.put("/:project_id/:id", auth, async (req, res) => {
   try {
     const task = await db.query(
-      "UPDATE tasks SET title = $1, description = $2, status = $3 where id=$4 returning *",
+      "UPDATE tasks SET title = $1, description = $2, status = $3 FROM  where id=$4 returning *",
       [req.body.title, req.body.description, req.body.status, req.params.id]
     );
     console.log(task);
@@ -141,7 +141,7 @@ router.put("/:project_id/:id", async (req, res) => {
   }
 });
 
-router.delete("/:project_id/:id", async (req, res) => {
+router.delete("/:project_id/:id", auth, async (req, res) => {
   try {
     const results = await db.query("DELETE FROM tasks where id = $1", [
       req.params.id,

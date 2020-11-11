@@ -48,7 +48,11 @@ function App() {
               exact
               path="/projects/:id"
               render={(props) =>
-                isAuth ? <Project {...props} /> : <Redirect to="/login" />
+                isAuth ? (
+                  <Project {...props} setAuth={setAuth} />
+                ) : (
+                  <Redirect to="/login" />
+                )
               }
             />
             <Route

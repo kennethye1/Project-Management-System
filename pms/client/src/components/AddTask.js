@@ -22,11 +22,15 @@ const AddTask = () => {
 
     try {
       if (status !== "Task Type") {
-        const response = await ProjectAPI.post(`/${id}/addTask`, {
-          title,
-          description,
-          status,
-        });
+        const response = await ProjectAPI.post(
+          `/${id}/addTask`,
+          {
+            title,
+            description,
+            status,
+          },
+          { headers: { token: localStorage.token } }
+        );
         console.log(response);
       }
     } catch (error) {

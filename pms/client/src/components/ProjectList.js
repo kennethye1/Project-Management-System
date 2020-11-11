@@ -11,7 +11,9 @@ const ProjectList = (props) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await ProjectAPI.get("/");
+        const response = await ProjectAPI.get("/", {
+          headers: { token: localStorage.token },
+        });
         setProjects(response.data.data.project);
         console.log(response);
       } catch (error) {
@@ -24,7 +26,9 @@ const ProjectList = (props) => {
   const handleDelete = async (e, id) => {
     e.stopPropagation();
     try {
-      const response = await ProjectAPI.delete(`/${id}`);
+      const response = await ProjectAPI.delete(`/${id}`, {
+        headers: { token: localStorage.token },
+      });
       setProjects(
         projects.filter((proj) => {
           return proj.id !== id;
@@ -53,6 +57,8 @@ const ProjectList = (props) => {
 
         <tbody>
           {projects &&
+            projects.length !== 0 &&
+            projects[0].id !== null &&
             projects.map((proj) => {
               return (
                 <tr onClick={() => handleProjectPage(proj.id)} key={proj.id}>

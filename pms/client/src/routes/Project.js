@@ -5,13 +5,15 @@ import { ProjectContext } from "../context/ProjectContext";
 import ProgressBars from "../components/ProgressBars";
 import TaskCards from "../components/TaskCards";
 import AddTask from "../components/AddTask";
-const Project = () => {
+const Project = ({ setAuth }) => {
   const { id } = useParams();
   const { selectedProj, setSelectedProj } = useContext(ProjectContext);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await ProjectAPI.get(`/${id}`);
+        const response = await ProjectAPI.get(`/${id}`, {
+          headers: { token: localStorage.token },
+        });
         setSelectedProj(response.data.data);
         console.log(response.data.data);
       } catch (error) {

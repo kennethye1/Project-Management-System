@@ -23,11 +23,16 @@ const Update = ({ proj }) => {
     e.preventDefault();
 
     try {
-      const response = await ProjectAPI.put(`/${proj.id}`, {
-        name,
-        description,
-      });
-      console.log(response);
+      const response = await ProjectAPI.put(
+        `/${proj.id}`,
+        {
+          name,
+          description,
+        },
+        {
+          headers: { token: localStorage.token },
+        }
+      );
       setShow(false);
     } catch (error) {
       console.error(error, error.stack);
