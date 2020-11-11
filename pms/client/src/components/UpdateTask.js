@@ -25,6 +25,7 @@ function UpdateTask({ open, close, task }) {
         description,
         status,
       });
+      console.log(status);
     } catch (error) {
       console.error(error, error.stack);
     }
@@ -147,11 +148,12 @@ function UpdateTask({ open, close, task }) {
           <Button
             variant="primary"
             onClick={(e) => {
+              console.log(status);
               handleUpdate(e);
               close(task.id);
-              setDescription(description);
-              setTitle(title);
-              setStatus(status);
+              // setDescription(description);
+              // setTitle(title);
+              // setStatus(status);
             }}
           >
             Save Changes

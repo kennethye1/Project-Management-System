@@ -3,10 +3,10 @@ import CreateProject from "../components/CreateProject";
 import Header from "../components/Header";
 import ProjectList from "../components/ProjectList";
 
-const Home = () => {
+const Home = ({ setAuth }) => {
   return (
     <div>
-      <Header />
+      <Header setAuth={setAuth} />
       <CreateProject />
       <ProjectList />
     </div>
