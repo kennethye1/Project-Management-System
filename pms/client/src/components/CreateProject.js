@@ -10,10 +10,16 @@ const CreateProject = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const response = await ProjectAPI.post("/", {
-        name,
-        description,
-      });
+      const response = await ProjectAPI.post(
+        "/",
+        {
+          name,
+          description,
+        },
+        {
+          headers: { token: localStorage.token },
+        }
+      );
       createProject(response.data.data.project);
       console.log(response);
     } catch (error) {

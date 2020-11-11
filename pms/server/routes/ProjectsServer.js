@@ -4,11 +4,14 @@ const auth = require("../authorization/Auth");
 
 router.get("/", auth, async (req, res) => {
   try {
-    const results = await db.query("SELECT * from projects");
+    const user = await db.query(
+      "SELECT u.username, p.id, p.name, p.description, p.progress from users AS u LEFT JOIN projects AS p ON u.user_id = p.user_id WHERE u.user_id = $1",
+      [req.user.id]
+    );
     res.status(200).json({
-      results: results.rows.length,
+      results: user.rows.length,
       data: {
-        project: results.rows,
+        project: user.rows,
       },
     });
   } catch (error) {
@@ -20,9 +23,14 @@ router.get("/", auth, async (req, res) => {
 //get one project
 router.get("/:id", auth, async (req, res) => {
   try {
-    const project = await db.query("SELECT * from projects where id= $1", [
-      req.params.id,
-    ]);
+    const project = await db.query(
+      "SELECT * from projects where id= $1 AND user_id = $2",
+      [req.params.id, req.user.id]
+    );
+
+    if (project.rows.length === 0) {
+      return res.status(401).json("Unauthorized Access");
+    }
 
     const tasks = await db.query("SELECT * from tasks where proj_id= $1", [
       req.params.id,
@@ -44,9 +52,10 @@ router.get("/:id", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     const results = await db.query(
-      "INSERT INTO projects (name, description) values ($1, $2) returning *",
-      [req.body.name, req.body.description]
+      "INSERT INTO projects (user_id, name, description) values ($1, $2, $3) returning *",
+      [req.user.id, req.body.name, req.body.description]
     );
+    console.log(req.user.id);
     res.status(201).json({
       data: {
         project: results.rows[0],
@@ -59,16 +68,19 @@ router.post("/", auth, async (req, res) => {
 });
 
 //update
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   try {
     const project = await db.query(
-      "UPDATE projects SET name = $1, description = $2 where id=$3 returning *",
-      [req.body.name, req.body.description, req.params.id]
+      "UPDATE projects SET name = $1, description = $2 WHERE id=$3 AND user_id = $4 returning *",
+      [req.body.name, req.body.description, req.params.id, req.user.id]
     );
+    if (project.rows.length === 0) {
+      return res.status(401).json("Unauthorized Access");
+    }
 
     res.status(200).json({
       data: {
-        project: results.rows[0],
+        project: project.rows[0],
       },
     });
   } catch (error) {
@@ -80,14 +92,19 @@ router.put("/:id", async (req, res) => {
 //delete
 router.delete("/:id", auth, async (req, res) => {
   try {
-    const results = await db.query("DELETE FROM projects where id = $1", [
-      req.params.id,
-    ]);
+    const results = await db.query(
+      "DELETE FROM projects where id = $1 AND user_id = $2 RETURNING *",
+      [req.params.id, req.user.id]
+    );
+    if (results.rows.length === 0) {
+      return res.status(401).json("Unauthorized Access");
+    }
     res.status(204).json();
   } catch (error) {
     console.error(error.message);
   }
 });
+
 // add a Task
 router.post("/:id/addTask", async (req, res) => {
   try {
